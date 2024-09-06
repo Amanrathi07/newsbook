@@ -1,14 +1,14 @@
+import React, { Component } from 'react'
+import Navbar from './container/Navbar'
+import Newsbox from './container/Newsbox'
 
-import './App.css';
-
-function App() {
-  return (
-   <>
-   
-   
-   
-   </>
-  );
+export default class App extends Component {
+  render() {
+    return (
+      <div>
+        <Navbar  title="newsbook"/>
+        <Newsbox />
+      </div>
+    )
+  }
 }
-
-export default App;
