@@ -9,14 +9,13 @@ export default class newsbox extends Component {
 
     this.state = {
       articles: this.articles,
-      page:1
 
     }
 
   }
 
   async componentDidMount(){
-    let url="https://newsapi.org/v2/top-headlines?country=us&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=1&pageSize=12";
+    let url="https://newsapi.org/v2/top-headlines?country=us&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=1&pageSize=6";
 
     
 
@@ -27,12 +26,12 @@ export default class newsbox extends Component {
     this.setState({articles:newsData.articles})
   }
 
-  hendalNextClick=()=>{
+  hendelNextClick=()=>{
     console.log("next")
   }
 
-  hendalPervClick=()=>{
-    console.log("pervius")
+  hendelPervClick=()=>{
+    console.log("perverse")
   }
 
 
@@ -40,11 +39,9 @@ export default class newsbox extends Component {
     return (<>
 
       <div className="container">
-        
-      <h2 className='text-center my-3 '>Top-Headlins</h2>
-       
+        <h2 className='my-3'>Top-Headlins</h2>
 
-        <div className=" row ">
+        <div className=" row mb-3 ">
           {this.state.articles.map((element) => {
             return (
               <div className='col-md-4 mb-3'  key={element.url}>
@@ -56,9 +53,11 @@ export default class newsbox extends Component {
         </div>
 
       <div className="my-3 d-flex justify-content-between">
-      <button type="button" disabled={this.state.page<=1} onClick={this.hendalPervClick} className="btn btn-dark">&larr; previous</button>
-      <button type="button" onClick={this.hendalNextClick} className="btn btn-dark">Next &rarr;</button>
-      </div>
+      <button type="button" disabled={false} onClick={this.hendelPervClick} className="btn btn-dark">&larr;perverse</button>
+      <button type="button" onClick={this.hendelNextClick} className="btn btn-dark">Next&rarr;</button>
+      </div>    
+
+
       </div>
     </>
     )
