@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
 import Newsitem from './Newsitem'
+import Spinner from './Spinner';
+
+
+
+
 
 export default class newsbox extends Component {
 
@@ -9,51 +14,61 @@ export default class newsbox extends Component {
 
     this.state = {
       articles: this.articles,
-      page:1,
-      
+      page: 1 ,
+      loading:false
+
     }
 
   }
 
-  async componentDidMount(){
-    let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page}&pageSize=6`;    
+  async componentDidMount() {
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page}&pageSize=${this.props.pageSize}`;
 
-    let data=await fetch(url)
-    
-    let newsData=await data.json() ;
+    this.setState({loading:true})
+    let data = await fetch(url)
 
-    this.setState({articles:newsData.articles,totalResults:newsData.totalResults})
+    let newsData = await data.json();
+
+    this.setState({ articles: newsData.articles,
+       totalResults: newsData.totalResults,
+      loading:false})
   }
 
-  hendelNextClick=async()=>{
+  hendelNextClick = async () => {
+
+    if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize))) 
+     {
+      console.log("next")
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
+
+      this.setState({ loading:true})
    
-  if(this.state.page+1 > Math.ceil(this.state.totalResults/6)){}
-  else{
-    console.log("next")
-    let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page + 1}&pageSize=6`;    
+      let data = await fetch(url)
 
-    let data=await fetch(url)
-    
-    let newsData=await data.json() ;
-    this.setState({
-      page:this.state.page+1,
-      articles:newsData.articles
-    })
-  }
-    
+      let newsData = await data.json();
+      this.setState({
+        page: this.state.page + 1,
+        articles: newsData.articles,
+         loading:false ,
+      })
+    }
+
   }
 
-  hendelPervClick=async()=>{
+  hendelPervClick = async () => {
     console.log("perverse")
-    
-    let url=`https://newsapi.org/v2/top-headlines?country=us&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page - 1}&pageSize=6`;    
 
-    let data=await fetch(url)
-    
-    let newsData=await data.json() ;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
+
+    this.setState({ loading:true})
+   
+    let data = await fetch(url)
+
+    let newsData = await data.json();
     this.setState({
-      page:this.state.page-1,
-      articles:newsData.articles
+      page: this.state.page - 1,
+      articles: newsData.articles,
+      loading:false
     })
   }
 
@@ -62,23 +77,24 @@ export default class newsbox extends Component {
     return (<>
 
       <div className="container">
-        <h2 className='my-3'>Top-Headlins</h2>
+        <h2 className='text-center my-3'>{this.props.category}-Top headlines </h2>
+       <div className='text-center'>{this.state.loading && <Spinner />} </div>  
 
         <div className=" row mb-3 ">
-          {this.state.articles.map((element) => {
+          {!this.state.loading && this.state.articles.map((element) => {
             return (
-              <div className='col-md-4 mb-3'  key={element.url}>
-                <Newsitem  title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} />
+              <div className='col-md-4 mb-3' key={element.url}>
+                <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} />
               </div>
 
             )
           })}
         </div>
 
-      <div className="my-3 d-flex justify-content-between">
-      <button type="button" disabled={this.state.page<=1} onClick={this.hendelPervClick} className="btn btn-dark">&larr;perverse</button>
-      <button type="button" disabled={this.state.page+1 > Math.ceil(this.state.totalResults/6)} onClick={this.hendelNextClick} className="btn btn-dark">Next&rarr;</button>
-      </div>    
+        <div className="my-3 d-flex justify-content-between">
+          <button type="button" disabled={this.state.page <= 1} onClick={this.hendelPervClick} className="btn btn-dark">&larr;perverse</button>
+          <button type="button" disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} onClick={this.hendelNextClick} className="btn btn-dark">Next&rarr;</button>
+        </div>
 
 
       </div>
