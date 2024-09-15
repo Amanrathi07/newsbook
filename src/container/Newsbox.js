@@ -21,6 +21,7 @@ export default class newsbox extends Component {
 
   }
 
+  
   async componentDidMount() {
     let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page}&pageSize=${this.props.pageSize}`;
 
@@ -72,19 +73,26 @@ export default class newsbox extends Component {
     })
   }
 
+  capitalize = (str) => {
+    return str
+      .split(' ')              
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) 
+      .join(' ');              
+  };
+
 
   render() {
     return (<>
 
       <div className="container">
-        <h2 className='text-center my-3'>{this.props.category}-Top headlines </h2>
+        <h2 className='text-center my-3'>Top {this.capitalize(this.props.category)} Headlines </h2>
        <div className='text-center'>{this.state.loading && <Spinner />} </div>  
 
         <div className=" row mb-3 ">
           {!this.state.loading && this.state.articles.map((element) => {
             return (
               <div className='col-md-4 mb-3' key={element.url}>
-                <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} />
+                <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} publishedAt={element.publishedAt} author={element.author} name={element.source.name}/>
               </div>
 
             )
