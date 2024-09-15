@@ -22,7 +22,7 @@ export default class newsbox extends Component {
   }
 
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page}&pageSize=${this.props.pageSize}`;
 
     this.setState({loading:true})
     let data = await fetch(url)
@@ -39,7 +39,7 @@ export default class newsbox extends Component {
     if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize))) 
      {
       console.log("next")
-      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
+      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
 
       this.setState({ loading:true})
    
@@ -58,7 +58,7 @@ export default class newsbox extends Component {
   hendelPervClick = async () => {
     console.log("perverse")
 
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
 
     this.setState({ loading:true})
    
