@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Newsitem from './Newsitem'
 import Spinner from './Spinner';
-
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 
@@ -14,98 +14,105 @@ export default class newsbox extends Component {
 
     this.state = {
       articles: this.articles,
-      page: 1 ,
-      loading:false
-
+      page: 1,
+      loading: false,
+      totalResults: 0
     }
 
   }
 
-  
-  async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page}&pageSize=${this.props.pageSize}`;
 
-    this.setState({loading:true})
+  async updateNews() {
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+
+    this.setState({ loading: true })
     let data = await fetch(url)
 
     let newsData = await data.json();
 
-    this.setState({ articles: newsData.articles,
-       totalResults: newsData.totalResults,
-      loading:false})
+    this.setState({
+      articles: newsData.articles,
+      totalResults: newsData.totalResults,
+      loading: false,
+    })
+
+  }
+
+  async componentDidMount() {
+    this.updateNews();
+    document.title = `newsBook-${this.props.category}`
   }
 
   hendelNextClick = async () => {
-
-    if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize))) 
-     {
-      console.log("next")
-      let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
-
-      this.setState({ loading:true})
-   
-      let data = await fetch(url)
-
-      let newsData = await data.json();
-      this.setState({
-        page: this.state.page + 1,
-        articles: newsData.articles,
-         loading:false ,
-      })
-    }
-
+    await (this.setState({ page: this.state.page + 1 }))
+    this.updateNews();
   }
 
   hendelPervClick = async () => {
-    console.log("perverse")
-
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=54ace28858c64f968b07162e949ba568&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
-
-    this.setState({ loading:true})
-   
-    let data = await fetch(url)
-
-    let newsData = await data.json();
-    this.setState({
-      page: this.state.page - 1,
-      articles: newsData.articles,
-      loading:false
-    })
+    await (this.setState({ page: this.state.page - 1 }))
+    this.updateNews();
   }
 
   capitalize = (str) => {
     return str
-      .split(' ')              
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) 
-      .join(' ');              
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
+
+  fetchMoreData = async () => {
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+
+    this.setState({ loading: true })
+    let data = await fetch(url)
+
+    let newsData = await data.json();
+
+    this.setState({
+      articles: this.state.articles.concat(newsData.articles),
+      totalResults: newsData.totalResults,
+      loading: false,
+      page: this.state.page + 1
+    })
+
   };
 
 
   render() {
     return (<>
 
-      <div className="container">
+      
         <h2 className='text-center my-3'>Top {this.capitalize(this.props.category)} Headlines </h2>
-       <div className='text-center'>{this.state.loading && <Spinner />} </div>  
+        <div className='text-center'>{this.state.loading && <Spinner />} </div>
 
-        <div className=" row mb-3 ">
-          {!this.state.loading && this.state.articles.map((element) => {
-            return (
-              <div className='col-md-4 mb-3' key={element.url}>
-                <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} publishedAt={element.publishedAt} author={element.author} name={element.source.name}/>
-              </div>
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length !== this.state.totalResults}
+          loader={<center><Spinner /></center>}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+        >
+          <div className='container '>
+            <div className=" row">
 
-            )
-          })}
-        </div>
+              {this.state.articles.map((element) => {
+                return (
+                  <div className='col-md-4 mb-3' key={element.url}>
+                    <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} publishedAt={element.publishedAt} author={element.author} name={element.source.name} />
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </InfiniteScroll>
+     
 
-        <div className="my-3 d-flex justify-content-between">
-          <button type="button" disabled={this.state.page <= 1} onClick={this.hendelPervClick} className="btn btn-dark">&larr;perverse</button>
-          <button type="button" disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.props.pageSize)} onClick={this.hendelNextClick} className="btn btn-dark">Next&rarr;</button>
-        </div>
 
-
-      </div>
     </>
     )
   }

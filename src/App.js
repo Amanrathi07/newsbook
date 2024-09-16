@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 export default class App extends Component {
 
-  newscomponent=12;
+  newscomponent=25;
 
   render() {  
 
