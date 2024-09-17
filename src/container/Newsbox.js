@@ -23,7 +23,7 @@ export default class newsbox extends Component {
 
 
   async updateNews() {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.props.api}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
 
     this.setState({ loading: true })
     let data = await fetch(url)
@@ -62,7 +62,7 @@ export default class newsbox extends Component {
 
 
   fetchMoreData = async () => {
-    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=e34bd0d6fd01488c80f93871d69b649f&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&category=${this.props.category}&apiKey=${this.props.api}&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
 
     this.setState({ loading: true })
     let data = await fetch(url)
@@ -90,7 +90,7 @@ export default class newsbox extends Component {
           dataLength={this.state.articles.length}
           next={this.fetchMoreData}
           hasMore={this.state.articles.length !== this.state.totalResults}
-          loader={<center><Spinner /></center>}
+          loader={"loading ..."}
           endMessage={
             <p style={{ textAlign: "center" }}>
               <b>Yay! You have seen it all</b>
@@ -100,9 +100,9 @@ export default class newsbox extends Component {
           <div className='container '>
             <div className=" row">
 
-              {this.state.articles.map((element) => {
+              {this.state.articles.map((element,index) => {
                 return (
-                  <div className='col-md-4 mb-3' key={element.url}>
+                  <div className='col-md-4 mb-3' key={index}>
                     <Newsitem title={element.title} description={element.description} urlToImage={element.urlToImage} url={element.url} publishedAt={element.publishedAt} author={element.author} name={element.source.name} />
                   </div>
                 )
