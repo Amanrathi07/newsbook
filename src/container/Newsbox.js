@@ -77,7 +77,7 @@ export default function Newsbox(props) {
       dataLength={articles.length}
       next={fetchMoreData}
       hasMore={articles.length !== totalResults}
-      loader={"loading ..."}
+      loader={<div className='text-center'>loading ...</div>}
       endMessage={
         <p style={{ textAlign: "center" }}>
           <b>Yay! You have seen it all</b>
