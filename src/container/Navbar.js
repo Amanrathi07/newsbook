@@ -1,15 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-export default class Navbar extends Component {
-  render() {
-    let { title } = this.props;
+export default function Navbar(props){
+  
     return (
       <>
         <nav className="navbar navbar-expand-lg bg-dark navbar-dark">
           <div className="container-fluid">
             <a className="navbar-brand" href="/">
-              {title}
+              {props.title}
             </a>
             <button
               className="navbar-toggler"
@@ -53,4 +52,4 @@ export default class Navbar extends Component {
       </>
     );
   }
-}
+
